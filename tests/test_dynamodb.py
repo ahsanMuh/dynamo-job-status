@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 import boto3
-from aws_dynamo_utils.dynamodb import (
+from dynamo_job_status.dynamodb import (
     create_job_log,
     get_job_id_by_name,
     update_job_status_by_id,
@@ -18,7 +18,7 @@ class TestDynamoUtils(unittest.TestCase):
         set_table_name("test-table")
         
         # Create a mock for the DynamoDB client
-        self.mock_dynamo_patcher = patch('aws_dynamo_utils.dynamodb.dynamo_client')
+        self.mock_dynamo_patcher = patch('dynamo_job_status.dynamodb.dynamo_client')
         self.mock_dynamo = self.mock_dynamo_patcher.start()
         
     def tearDown(self):

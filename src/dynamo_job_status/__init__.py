@@ -10,7 +10,8 @@ from .dynamodb import (
     update_parent_job_id,
     set_table_name,
     set_dynamo_client,
-    with_exponential_backoff
+    with_exponential_backoff,
+    set_debug
 )
 
 __version__ = "0.1.0"
@@ -22,5 +23,6 @@ __all__ = [
     'update_parent_job_id',
     'set_table_name',
     'set_dynamo_client',
-    'with_exponential_backoff'
+    'with_exponential_backoff',
+    'set_debug'
 ]

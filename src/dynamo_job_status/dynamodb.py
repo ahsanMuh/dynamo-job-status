@@ -229,7 +229,7 @@ def update_parent_job_id(
         ExpressionAttributeValues={":output_key": {"S": input_key}},
         ProjectionExpression="id"
     )
-    print(f"🔍 Response: {response}")
+    
     items = response.get('Items', [])
     if not items:
         if DEBUG:

@@ -1,0 +1,83 @@
+Metadata-Version: 2.4
+Name: dynamo_job_status
+Version: 0.1.0
+Summary: AWS DynamoDB utility functions with retry and error handling
+Author-email: Ahsan <your.email@example.com>
+License: MIT
+Project-URL: Homepage, https://github.com/ahsanMuh/dynamo-job-status
+Project-URL: Bug Tracker, https://github.com/ahsanMuh/dynamo-job-status/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: boto3>=1.24.0
+Requires-Dist: tenacity>=8.0.0
+Dynamic: license-file
+
+# Dynamo Job Status
+
+A utility package for working with AWS DynamoDB job status tracking, featuring:
+
+- Automatic retries with exponential backoff
+- Error handling
+- Job status tracking
+- Simple API for common DynamoDB operations
+
+## Installation
+
+```bash
+pip install dynamo-job-status
+```
+
+## Usage
+
+```python
+from dynamo_job_status.dynamodb import create_job_log, update_job_status_by_id, JobStatus
+
+# Create a new job
+job_id = create_job_log(
+    job_name="my-process-job",
+    job_type="data-processing",
+    input_key="input-file.csv",
+    bucket_name="my-s3-bucket"
+)
+
+# Update job status
+update_job_status_by_id(
+    job_id=job_id, 
+    status=JobStatus.PROCESSING
+)
+
+# Mark job as complete
+update_job_status_by_id(
+    job_id=job_id, 
+    status=JobStatus.COMPLETE, 
+    output_key="output-results.json"
+)
+```
+
+## Features
+
+- **Automatic Retries**: All DynamoDB operations are wrapped with exponential backoff retries
+- **Job Status Tracking**: Easily track jobs through their lifecycle (PENDING, PROCESSING, COMPLETE, FAILED)
+- **Simple API**: Straightforward functions for common DynamoDB operations
+- **Type Hints**: Full type hinting for better IDE support
+
+## Configuration
+
+By default, the package uses the "workers-job-status" table name. You can override this by setting:
+
+```python
+from dynamo_job_status.dynamodb import set_table_name
+
+set_table_name("my-custom-table-name")
+```
+
+## License
+
+MIT

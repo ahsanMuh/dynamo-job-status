@@ -206,8 +206,7 @@ def update_parent_job_id(
         TableName=TABLE_NAME,
         FilterExpression="outputKey = :output_key",
         ExpressionAttributeValues={":output_key": {"S": input_key}},
-        ProjectionExpression="id",
-        Limit=1
+        ProjectionExpression="id"
     )
     
     items = response.get('Items', [])

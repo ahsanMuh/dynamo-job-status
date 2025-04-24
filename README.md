@@ -1,6 +1,6 @@
-# AWS DynamoDB Utils
+# Dynamo Job Status
 
-A utility package for working with AWS DynamoDB, featuring:
+A utility package for working with AWS DynamoDB job status tracking, featuring:
 
 - Automatic retries with exponential backoff
 - Error handling
@@ -10,13 +10,13 @@ A utility package for working with AWS DynamoDB, featuring:
 ## Installation
 
 ```bash
-pip install aws-dynamo-utils
+pip install dynamo-job-status
 ```
 
 ## Usage
 
 ```python
-from aws_dynamo_utils.dynamodb import create_job_log, update_job_status_by_id, JobStatus
+from dynamo_job_status.dynamodb import create_job_log, update_job_status_by_id, JobStatus
 
 # Create a new job
 job_id = create_job_log(
@@ -52,7 +52,7 @@ update_job_status_by_id(
 By default, the package uses the "workers-job-status" table name. You can override this by setting:
 
 ```python
-from aws_dynamo_utils.dynamodb import set_table_name
+from dynamo_job_status.dynamodb import set_table_name
 
 set_table_name("my-custom-table-name")
 ```

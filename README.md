@@ -10,7 +10,7 @@ A utility package for working with AWS DynamoDB job status tracking, featuring:
 ## Installation
 
 ```bash
-pip install dynamo-job-status
+pip install git+https://github.com/ahsanMuh/dynamo-job-status.git
 ```
 
 ## Usage

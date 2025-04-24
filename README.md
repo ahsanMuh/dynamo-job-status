@@ -16,11 +16,15 @@ pip install git+https://github.com/ahsanMuh/dynamo-job-status.git
 ## Usage
 
 ```python
-from dynamo_job_status.dynamodb import create_job_log, update_job_status_by_id, update_parent_job_id, JobStatus, set_table_name
+from dynamo_job_status.dynamodb import create_job_log, update_job_status_by_id, update_parent_job_id, JobStatus, set_table_name, set_debug
 
 # Set custom table name (optional)
 # By default, the package uses "workers-job-status" table
 set_table_name("my-custom-table-name")
+
+# Enable debug logging (optional)
+# By default, debug is disabled
+set_debug(True)
 
 # Create a new job
 job_id = create_job_log(
@@ -63,6 +67,7 @@ update_parent_job_id(
 - **Job Relationships**: Track parent-child relationships between jobs in a workflow
 - **Simple API**: Straightforward functions for common DynamoDB operations
 - **Type Hints**: Full type hinting for better IDE support
+- **Debug Mode**: Optional debug logging to help with troubleshooting
 
 ## License
 

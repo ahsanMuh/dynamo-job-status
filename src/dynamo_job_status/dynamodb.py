@@ -10,6 +10,7 @@ from typing import Optional, Dict, Any
 # Default table name - can be overridden
 TABLE_NAME = "workers-job-status"
 dynamo_client = boto3.client('dynamodb')
+DEBUG=False
 
 class JobStatus:
     """Constants representing possible job states."""
@@ -29,7 +30,19 @@ def set_table_name(table_name: str) -> None:
     global TABLE_NAME
     TABLE_NAME = table_name
     print(f"DynamoDB table name set to: {TABLE_NAME}")
+
+
+def set_debug(debug: bool) -> None:
+    """
+    Set the debug flag.
     
+    Args:
+        debug: The debug flag
+    """
+    global DEBUG
+    DEBUG = debug
+    print(f"Debug flag set to: {DEBUG}")
+
     
 def set_dynamo_client(client: Any) -> None:
     """
@@ -40,14 +53,15 @@ def set_dynamo_client(client: Any) -> None:
     """
     global dynamo_client
     dynamo_client = client
-    print("Custom DynamoDB client set")
+    if DEBUG:
+        print("Custom DynamoDB client set")
 
 
 def with_exponential_backoff(max_attempts=3, min_wait=2, max_wait=10):
     """
     Generic decorator for DynamoDB operations with exponential backoff retry.
     
-    Args:
+    Args:   
         max_attempts: Maximum number of retry attempts
         min_wait: Minimum wait time in seconds
         max_wait: Maximum wait time in seconds
@@ -100,7 +114,8 @@ def create_job_log(
     }
 
     dynamo_client.put_item(TableName=TABLE_NAME, Item=item)
-    print(f"Log inserted successfully with ID: {job_id}")
+    if DEBUG:
+        print(f"Log inserted successfully with ID: {job_id}")
     return job_id
 
 
@@ -126,12 +141,14 @@ def get_job_id_by_name(job_name: str) -> Optional[str]:
     
     items = response.get('Items', [])
     if not items:
-        print(f"No job found with name: {job_name}")
+        if DEBUG:
+            print(f"No job found with name: {job_name}")
         return None
         
     # Return just the ID string instead of a list since we expect only one match
     job_id = items[0]["id"]["S"]
-    print(f"Found job with ID: {job_id}")
+    if DEBUG:
+        print(f"Found job with ID: {job_id}")
     return job_id
 
 
@@ -185,7 +202,8 @@ def update_job_status_by_id(
         ExpressionAttributeValues=expression_values,
         ReturnValues="UPDATED_NEW"
     )
-    print(f"Job status updated successfully")
+    if DEBUG:
+        print(f"Job status updated successfully")
     return response
 
 
@@ -200,6 +218,9 @@ def update_parent_job_id(
     Args:
         job_id: The ID of the job
         input_key: The key of the input file
+
+    Returns:
+        True if the parent job id was updated, False otherwise
     """
     # get parent job id from dynamo
     response = dynamo_client.scan(
@@ -208,11 +229,12 @@ def update_parent_job_id(
         ExpressionAttributeValues={":output_key": {"S": input_key}},
         ProjectionExpression="id"
     )
-    
+    print(f"🔍 Response: {response}")
     items = response.get('Items', [])
     if not items:
-        print(f"❌ No parent job found for input key: {input_key}")
-        return
+        if DEBUG:
+            print(f"❌ No parent job found for input key: {input_key}")
+        return False
     
     parent_job_id = items[0]["id"]["S"]
     
@@ -223,4 +245,6 @@ def update_parent_job_id(
         UpdateExpression="SET parentJobId = :parent_job_id",
         ExpressionAttributeValues={':parent_job_id': {'S': parent_job_id}}
     )
-    print(f"✅ Successfully updated parentJobId for job {job_id} to {parent_job_id}")
+    if DEBUG:
+        print(f"✅ Successfully updated parentJobId for job {job_id} to {parent_job_id}")
+    return True
